@@ -12,6 +12,20 @@ export function getPosts(page = 1, pageSize = 20, excludeIds?: number[]) {
   );
 }
 
+export function searchPosts(query: string, page = 1, pageSize = 20) {
+  return request<PostResponse[]>(
+    `/api/posts/search?q=${encodeURIComponent(query)}&page=${page}&pageSize=${pageSize}`
+  );
+}
+
+export function trackSearch(query: string) {
+  return request<void>('/api/posts/search/track', {
+    method: 'POST',
+    body: { query },
+    auth: true,
+  });
+}
+
 export function getRecommendations(count = 20, excludeIds?: number[]) {
   return request<PostResponse[]>(
     `/api/recommendations/fyp?count=${count}${buildExcludeQs(excludeIds)}`,

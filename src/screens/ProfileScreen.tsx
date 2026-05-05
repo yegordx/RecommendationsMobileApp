@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import { ScreenHeader } from '../components/ScreenHeader';
 import { PostCard } from '../components/PostCard';
 import { getPosts } from '../api/posts';
@@ -12,6 +13,7 @@ import { useAuth } from '../store/AuthContext';
 export function ProfileScreen() {
   const { user, signOut } = useAuth();
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
   const [posts, setPosts] = useState<PostResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -54,6 +56,14 @@ export function ProfileScreen() {
 
       <TouchableOpacity style={styles.editBtn}>
         <Text style={styles.editBtnText}>Редагувати профіль</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.analyticsBtn}
+        onPress={() => (navigation as any).navigate('Analytics')}
+      >
+        <Text style={styles.analyticsBtnText}>📊  Аналітика акаунту</Text>
+        <Text style={styles.analyticsArrow}>→</Text>
       </TouchableOpacity>
 
       <Text style={styles.sectionLabel}>ВАШІ ЗАПИСИ</Text>
@@ -103,9 +113,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     width: '100%',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   editBtnText: { color: Colors.background, fontWeight: '600', fontSize: 15 },
+  analyticsBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: Colors.card,
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    width: '100%',
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: Colors.cardBorder,
+  },
+  analyticsBtnText: { color: Colors.white, fontSize: 15 },
+  analyticsArrow: { color: Colors.accent, fontSize: 18 },
   sectionLabel: {
     fontSize: 11,
     color: Colors.secondaryText,

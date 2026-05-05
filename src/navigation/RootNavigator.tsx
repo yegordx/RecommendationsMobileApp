@@ -14,8 +14,10 @@ import { FeedScreen } from '../screens/FeedScreen';
 import { SearchScreen } from '../screens/SearchScreen';
 import { CreatePostScreen } from '../screens/CreatePostScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
+import { AnalyticsScreen } from '../screens/AnalyticsScreen';
 
 const Stack = createNativeStackNavigator();
+const MainStack = createNativeStackNavigator();
 const Tab = createMaterialTopTabNavigator();
 
 function MainTabs() {
@@ -34,6 +36,15 @@ function MainTabs() {
   );
 }
 
+function MainStackNav() {
+  return (
+    <MainStack.Navigator screenOptions={{ headerShown: false }}>
+      <MainStack.Screen name="Tabs" component={MainTabs} />
+      <MainStack.Screen name="Analytics" component={AnalyticsScreen} />
+    </MainStack.Navigator>
+  );
+}
+
 function AuthStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -43,7 +54,7 @@ function AuthStack() {
   );
 }
 
-const KEYBOARD_ALLOWED_ROUTES = new Set(['Create', 'Login', 'Register']);
+const KEYBOARD_ALLOWED_ROUTES = new Set(['Create', 'Login', 'Register', 'Search']);
 
 function getActiveRoute(
   state: NavigationState | undefined
@@ -92,7 +103,7 @@ export function RootNavigator() {
         activeRouteName.current = active?.name;
       }}
     >
-      {user ? <MainTabs /> : <AuthStack />}
+      {user ? <MainStackNav /> : <AuthStack />}
     </NavigationContainer>
   );
 }
