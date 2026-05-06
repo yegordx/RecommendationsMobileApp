@@ -51,11 +51,13 @@ export function PostCard({ post, onPress }: Props) {
 
       <Text style={styles.body}>{post.body}</Text>
 
-      {post.clusterTags.length > 0 && (
-        <View style={styles.tagsRow}>
-          {post.clusterTags.map((t) => (
-            <Text key={t.id} style={styles.tag}>#{t.name}</Text>
-          ))}
+      {post.userTags?.length > 0 && (
+        <View style={styles.userTagsBlock}>
+          <View style={styles.tagsRow}>
+            {post.userTags.map((t) => (
+              <Text key={t.id} style={styles.userTag}>#{t.name}</Text>
+            ))}
+          </View>
         </View>
       )}
 
@@ -115,13 +117,19 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 22,
   },
+  userTagsBlock: {
+    marginTop: 16,
+    paddingTop: 12,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: '#444444',
+  },
   tagsRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 6,
   },
-  tag: {
-    color: Colors.accent,
+  userTag: {
+    color: Colors.white,
     fontSize: 13,
   },
   actions: {

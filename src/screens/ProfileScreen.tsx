@@ -9,11 +9,13 @@ import { getPosts } from '../api/posts';
 import { PostResponse } from '../constants/types';
 import { Colors } from '../constants/colors';
 import { useAuth } from '../store/AuthContext';
+import { useLanguage } from '../store/LanguageContext';
 
 export function ProfileScreen() {
   const { user, signOut } = useAuth();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+  const { t } = useLanguage();
   const [posts, setPosts] = useState<PostResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -39,13 +41,13 @@ export function ProfileScreen() {
       </View>
 
       <Text style={styles.username}>@{user?.name ?? 'user'}</Text>
-      <Text style={styles.bio}>«Дослідник, творець і любитель кави»</Text>
+      <Text style={styles.bio}>{t.bio}</Text>
 
       <View style={styles.statsRow}>
         {[
-          { label: 'пости', value: String(posts.length) },
-          { label: 'підписники', value: '1.2K' },
-          { label: 'підписки', value: '130' },
+          { label: t.statPosts, value: String(posts.length) },
+          { label: t.statFollowers, value: '1.2K' },
+          { label: t.statFollowing, value: '130' },
         ].map((s) => (
           <View key={s.label} style={styles.statItem}>
             <Text style={styles.statNum}>{s.value}</Text>
@@ -55,18 +57,18 @@ export function ProfileScreen() {
       </View>
 
       <TouchableOpacity style={styles.editBtn}>
-        <Text style={styles.editBtnText}>Редагувати профіль</Text>
+        <Text style={styles.editBtnText}>{t.editProfile}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.analyticsBtn}
         onPress={() => (navigation as any).navigate('Analytics')}
       >
-        <Text style={styles.analyticsBtnText}>📊  Аналітика акаунту</Text>
+        <Text style={styles.analyticsBtnText}>{t.accountAnalytics}</Text>
         <Text style={styles.analyticsArrow}>→</Text>
       </TouchableOpacity>
 
-      <Text style={styles.sectionLabel}>ВАШІ ЗАПИСИ</Text>
+      <Text style={styles.sectionLabel}>{t.yourPosts}</Text>
     </View>
   );
 

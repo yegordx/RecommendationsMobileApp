@@ -5,6 +5,7 @@ export type PostResponse = {
   ownerName: string;
   createdAt: string;
   clusterTags: { id: number; name: string }[];
+  userTags: { id: number; name: string }[];
 };
 
 export type KeyTag = { id: number; name: string };

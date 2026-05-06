@@ -6,9 +6,11 @@ import {
 import { useAuth } from '../store/AuthContext';
 import { login } from '../api/auth';
 import { Colors } from '../constants/colors';
+import { useLanguage } from '../store/LanguageContext';
 
 export function LoginScreen({ navigation }: any) {
   const { signIn } = useAuth();
+  const { t } = useLanguage();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -20,7 +22,7 @@ export function LoginScreen({ navigation }: any) {
       const user = await login(email.trim(), password);
       await signIn(user);
     } catch (e: any) {
-      Alert.alert('Помилка', e.message || 'Не вдалося увійти');
+      Alert.alert(t.errorTitle, e.message || t.loginFailed);
     } finally {
       setLoading(false);
     }
@@ -48,18 +50,18 @@ export function LoginScreen({ navigation }: any) {
         />
         <TextInput
           style={styles.input}
-          placeholder="Пароль"
+          placeholder={t.passwordPlaceholder}
           placeholderTextColor={Colors.secondaryText}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
         />
         <TouchableOpacity style={styles.primaryBtn} onPress={handleLogin} disabled={loading}>
-          {loading ? <ActivityIndicator color={Colors.background} /> : <Text style={styles.primaryBtnText}>Увійти</Text>}
+          {loading ? <ActivityIndicator color={Colors.background} /> : <Text style={styles.primaryBtnText}>{t.signIn}</Text>}
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.navigate('Register')} style={styles.linkBtn}>
-          <Text style={styles.linkText}>Немає акаунта? Зареєструватися</Text>
+          <Text style={styles.linkText}>{t.noAccount}</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

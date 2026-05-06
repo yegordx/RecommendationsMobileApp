@@ -8,9 +8,11 @@ import { register } from '../api/auth';
 import { getKeyTags } from '../api/tags';
 import { Colors } from '../constants/colors';
 import { KeyTag } from '../constants/types';
+import { useLanguage } from '../store/LanguageContext';
 
 export function RegisterScreen({ navigation }: any) {
   const { signIn } = useAuth();
+  const { t } = useLanguage();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -35,7 +37,7 @@ export function RegisterScreen({ navigation }: any) {
       const user = await register(name.trim(), email.trim(), password, selectedIds);
       await signIn(user);
     } catch (e: any) {
-      Alert.alert('Помилка', e.message || 'Не вдалося зареєструватися');
+      Alert.alert(t.errorTitle, e.message || t.registerFailed);
     } finally {
       setLoading(false);
     }
@@ -53,17 +55,17 @@ export function RegisterScreen({ navigation }: any) {
       </View>
 
       <View style={styles.form}>
-        <TextInput style={styles.input} placeholder="Ім'я" placeholderTextColor={Colors.secondaryText}
+        <TextInput style={styles.input} placeholder={t.namePlaceholder} placeholderTextColor={Colors.secondaryText}
           value={name} onChangeText={setName} />
         <TextInput style={styles.input} placeholder="Email" placeholderTextColor={Colors.secondaryText}
           value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
-        <TextInput style={styles.input} placeholder="Пароль" placeholderTextColor={Colors.secondaryText}
+        <TextInput style={styles.input} placeholder={t.passwordPlaceholder} placeholderTextColor={Colors.secondaryText}
           value={password} onChangeText={setPassword} secureTextEntry />
       </View>
 
       {keyTags.length > 0 && (
         <View style={styles.tagsSection}>
-          <Text style={styles.sectionLabel}>ІНТЕРЕСИ</Text>
+          <Text style={styles.sectionLabel}>{t.interests}</Text>
           <View style={styles.tagsWrap}>
             {keyTags.map((tag) => {
               const active = selectedIds.includes(tag.id);
@@ -84,11 +86,11 @@ export function RegisterScreen({ navigation }: any) {
       <TouchableOpacity style={styles.primaryBtn} onPress={handleRegister} disabled={loading}>
         {loading
           ? <ActivityIndicator color={Colors.background} />
-          : <Text style={styles.primaryBtnText}>Зареєструватися</Text>}
+          : <Text style={styles.primaryBtnText}>{t.register}</Text>}
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.linkBtn}>
-        <Text style={styles.linkText}>Вже є акаунт? Увійти</Text>
+        <Text style={styles.linkText}>{t.hasAccount}</Text>
       </TouchableOpacity>
     </ScrollView>
   );

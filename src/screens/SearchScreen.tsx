@@ -12,12 +12,14 @@ import { searchPosts, trackSearch } from '../api/posts';
 import { ClusterTag, PostResponse } from '../constants/types';
 import { Colors } from '../constants/colors';
 import { useAuth } from '../store/AuthContext';
+import { useLanguage } from '../store/LanguageContext';
 
 const DEBOUNCE_MS = 400;
 
 export function SearchScreen() {
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [query, setQuery] = useState('');
   const [tags, setTags] = useState<ClusterTag[]>([]);
   const [results, setResults] = useState<PostResponse[]>([]);
@@ -89,7 +91,7 @@ export function SearchScreen() {
         <TextInput
           ref={inputRef}
           style={styles.input}
-          placeholder="Пошук за контентом..."
+          placeholder={t.searchPlaceholder}
           placeholderTextColor={Colors.secondaryText}
           value={query}
           onChangeText={setQuery}
@@ -106,7 +108,7 @@ export function SearchScreen() {
       {isSearching ? (
         <>
           <Text style={styles.sectionLabel}>
-            {loading ? 'ПОШУК...' : `РЕЗУЛЬТАТИ: ${results.length}`}
+            {loading ? t.searching : t.results(results.length)}
           </Text>
           {loading ? (
             <ActivityIndicator color={Colors.accent} style={{ marginTop: 20 }} />
@@ -115,7 +117,7 @@ export function SearchScreen() {
               data={results}
               keyExtractor={(item) => String(item.id)}
               renderItem={renderPost}
-              ListEmptyComponent={<Text style={styles.empty}>Нічого не знайдено</Text>}
+              ListEmptyComponent={<Text style={styles.empty}>{t.nothingFound}</Text>}
               ListFooterComponent={<View style={{ height: 100 }} />}
               contentContainerStyle={results.length === 0 ? styles.emptyContainer : undefined}
             />
@@ -123,7 +125,7 @@ export function SearchScreen() {
         </>
       ) : (
         <>
-          <Text style={styles.sectionLabel}>ПОПУЛЯРНІ ТЕМИ</Text>
+          <Text style={styles.sectionLabel}>{t.popularTopics}</Text>
           {tagsLoading ? (
             <ActivityIndicator color={Colors.accent} style={{ marginTop: 20 }} />
           ) : (

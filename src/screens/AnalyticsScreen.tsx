@@ -8,17 +8,11 @@ import { useNavigation } from '@react-navigation/native';
 import { BarChart, PieChart, LineChart } from 'react-native-gifted-charts';
 import { getMyAnalytics, AnalyticsResponse } from '../api/analytics';
 import { Colors } from '../constants/colors';
+import { useLanguage } from '../store/LanguageContext';
 
 const SCREEN_W = Dimensions.get('window').width;
 const CHART_W = SCREEN_W - 32;
 
-const TYPE_LABELS: Record<string, string> = {
-  View: 'Перегляди',
-  Like: 'Лайки',
-  Dislike: 'Дизлайки',
-  Save: 'Збережені',
-  Click: 'Кліки',
-};
 
 const TYPE_COLORS: Record<string, string> = {
   View: '#4A90E2',
@@ -33,6 +27,7 @@ const PIE_COLORS = ['#4A90E2', '#50C878', '#E2A54A', '#E25454', '#A54AE2', '#54C
 export function AnalyticsScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+  const { t } = useLanguage();
   const [data, setData] = useState<AnalyticsResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -48,7 +43,7 @@ export function AnalyticsScreen() {
         .filter(([key]) => key !== 'Click')
         .map(([key, value]) => ({
           value,
-          label: TYPE_LABELS[key] ?? key,
+          label: t.typeLabels[key as keyof typeof t.typeLabels] ?? key,
           frontColor: TYPE_COLORS[key] ?? Colors.accent,
           labelTextStyle: { color: Colors.secondaryText, fontSize: 10 },
         }))
@@ -73,9 +68,9 @@ export function AnalyticsScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-          <Text style={styles.backText}>← Назад</Text>
+          <Text style={styles.backText}>{t.back}</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>Аналітика</Text>
+        <Text style={styles.title}>{t.analytics}</Text>
         <View style={{ width: 70 }} />
       </View>
 
@@ -87,15 +82,15 @@ export function AnalyticsScreen() {
           <View style={styles.summaryRow}>
             <View style={styles.summaryCard}>
               <Text style={styles.summaryNum}>{totalInteractions}</Text>
-              <Text style={styles.summaryLabel}>Всього взаємодій</Text>
+              <Text style={styles.summaryLabel}>{t.totalInteractions}</Text>
             </View>
             <View style={styles.summaryCard}>
               <Text style={styles.summaryNum}>{data?.topTopics.length ?? 0}</Text>
-              <Text style={styles.summaryLabel}>Тем в інтересах</Text>
+              <Text style={styles.summaryLabel}>{t.topicsCount}</Text>
             </View>
           </View>
 
-          <Text style={styles.sectionLabel}>ВЗАЄМОДІЇ ЗА ТИПАМИ</Text>
+          <Text style={styles.sectionLabel}>{t.interactionsByType}</Text>
           <View style={styles.card}>
             {barData.length > 0 ? (
               <BarChart
@@ -115,11 +110,11 @@ export function AnalyticsScreen() {
                 initialSpacing={8}
               />
             ) : (
-              <Text style={styles.empty}>Немає даних</Text>
+              <Text style={styles.empty}>{t.noData}</Text>
             )}
           </View>
 
-          <Text style={styles.sectionLabel}>ТОП ТЕМИ</Text>
+          <Text style={styles.sectionLabel}>{t.topTopics}</Text>
           <View style={styles.card}>
             {pieData.length > 0 ? (
               <View style={styles.pieRow}>
@@ -129,7 +124,7 @@ export function AnalyticsScreen() {
                   radius={80}
                   innerRadius={50}
                   centerLabelComponent={() => (
-                    <Text style={styles.pieCenter}>{pieData.length}{'\n'}тем</Text>
+                    <Text style={styles.pieCenter}>{pieData.length}{'\n'}{t.topicsUnit}</Text>
                   )}
                 />
                 <View style={styles.legend}>
@@ -143,11 +138,11 @@ export function AnalyticsScreen() {
                 </View>
               </View>
             ) : (
-              <Text style={styles.empty}>Немає даних</Text>
+              <Text style={styles.empty}>{t.noData}</Text>
             )}
           </View>
 
-          <Text style={styles.sectionLabel}>АКТИВНІСТЬ ЗА 7 ДНІВ</Text>
+          <Text style={styles.sectionLabel}>{t.activityDays}</Text>
           <View style={styles.card}>
             {lineViews.length > 0 ? (
               <>
@@ -175,9 +170,9 @@ export function AnalyticsScreen() {
                 />
                 <View style={styles.lineLegend}>
                   {[
-                    { color: TYPE_COLORS.View, label: 'Перегляди' },
-                    { color: TYPE_COLORS.Like, label: 'Лайки' },
-                    { color: TYPE_COLORS.Save, label: 'Збережені' },
+                    { color: TYPE_COLORS.View, label: t.lineLabels[0] },
+                    { color: TYPE_COLORS.Like, label: t.lineLabels[1] },
+                    { color: TYPE_COLORS.Save, label: t.lineLabels[2] },
                   ].map((l) => (
                     <View key={l.label} style={styles.lineLegendItem}>
                       <View style={[styles.lineDash, { backgroundColor: l.color }]} />
@@ -187,7 +182,7 @@ export function AnalyticsScreen() {
                 </View>
               </>
             ) : (
-              <Text style={styles.empty}>Немає даних</Text>
+              <Text style={styles.empty}>{t.noData}</Text>
             )}
           </View>
 

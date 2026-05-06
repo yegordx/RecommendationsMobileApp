@@ -33,8 +33,8 @@ export function getRecommendations(count = 20, excludeIds?: number[]) {
   );
 }
 
-export function createPost(body: string) {
-  return request<PostResponse>('/api/posts', { method: 'POST', body: { body }, auth: true });
+export function createPost(body: string, tags?: string[]) {
+  return request<PostResponse>('/api/posts', { method: 'POST', body: { body, tags }, auth: true });
 }
 
 export function deletePost(id: number) {
